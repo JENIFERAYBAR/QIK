@@ -1,0 +1,646 @@
+{
+	"info": {
+		"_postman_id": "d27b2afc-da4e-4995-85b4-e758b76003a4",
+		"name": "Ejercicio 2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27059269"
+	},
+	"item": [
+		{
+			"name": "comments",
+			"item": [
+				{
+					"name": "Ruta de endpoint comments incorrecta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Validar que el codigo 404 es retornado como 404 Not Found\", function () {",
+									"    pm.response.to.have.status(404).and.to.have.status(\"Not Found\");",
+									"});",
+									"",
+									"pm.test(\"Validar que sea retornado el cuerpo de la respuesta de la applicacion\", function() {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+									"});",
+									"",
+									"pm.test(\"Validar que sea retornado el cuerpo de la respuesta\",  function () {",
+									"    pm.expect(pm.response.json()).to.be.empty;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/comment",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"comment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ruta de endpoint comments correcta con el method GET",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Validar que retorne etatus code is 404 Not Found\", function () {",
+									"    pm.response.to.have.status(200).and.to.have.status(\"OK\");",
+									"});",
+									"",
+									"pm.test(\"Validar que sea retornado el cuerpo de la respuesta de la aplicacion/json\", function() {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Validar se retorne el tipo de dato de los campos en la lista retornada\", function () {",
+									"    for (let i in jsonData) {",
+									"        pm.expect(Object.keys(jsonData[i]).length, \"[cantidad campos retornados]\").to.equal(5);",
+									"        pm.expect(jsonData[i].postId, \"[postId]\").to.be.a('number');",
+									"        pm.expect(jsonData[i].id, \"[id]\").to.be.a('number');",
+									"        pm.expect(jsonData[i].name, \"[name]\").to.be.a(\"string\").and.not.empty;",
+									"        pm.expect(jsonData[i].email, \"[email]\").to.be.a(\"string\");",
+									"        pm.expect(jsonData[i].body, \"[body]\").to.be.a(\"string\");",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/comments",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ruta de endpoint comments correcta con method POST",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"confirmar que se retorne code is 404 Not Found\", function () {",
+									"    pm.response.to.have.status(201).and.to.have.status(\"Created\");",
+									"});",
+									"",
+									"pm.test(\"Validar que sea retornada correctamente el cuerpo de la respuesta applicacion/json\", function() {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"const jsonBody = JSON.parse(pm.collectionVariables.get(\"jsonBody\"));",
+									"",
+									"pm.test(\"Validar la cantidad de elementos retornados dentro del objecto sea el correcto\", function() {",
+									"    pm.expect(Object.keys(jsonData).length).to.equal(4);",
+									"});",
+									"",
+									"pm.test(\"Validar el retorno del campo name\", function() {",
+									"    pm.expect(jsonData.name).to.equal(jsonBody.name).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el retorno campo email\", function() {",
+									"    pm.expect(jsonData.email).to.equal(jsonBody.email).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el retorno de la informacion campo body\", function() {",
+									"    pm.expect(jsonData.body).to.equal(jsonBody.body).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el retorno del campo id\", function() {",
+									"    pm.expect(jsonData.id).to.be.a('number');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const jsonObj = {};",
+									"",
+									"jsonObj.name = pm.collectionVariables.get(\"name\");",
+									"jsonObj.email = pm.collectionVariables.get(\"email\");",
+									"jsonObj.body = pm.collectionVariables.get(\"body\");",
+									"",
+									"pm.collectionVariables.set(\"jsonBody\", JSON.stringify(jsonObj));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{jsonBody}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/comments",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"comments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "photos",
+			"item": [
+				{
+					"name": "Ruta de endpoint incorrecta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Validar que se retorne el estatus code is 404 Not Found\", function () {",
+									"    pm.response.to.have.status(404).and.to.have.status(\"Not Found\");",
+									"});",
+									"",
+									"pm.test(\"Validar el retorno del cuerpo de la respuesta applicacion/json\", function() {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+									"});",
+									"",
+									"pm.test(\"Validar el cuerpo de la respuesta al momento de retornar\",  function () {",
+									"    pm.expect(pm.response.json()).to.be.empty;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/photo",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"photo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ruta de endpotin correcta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Validar que es al momento de retornar el resultado sea un codigo 200 OK\", function () {",
+									"    pm.response.to.have.status(200).and.to.have.status(\"OK\");",
+									"});",
+									"",
+									"pm.test(\"Validar el cuerpo de la respuesta applicacion/json\", function() {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Validar que el tipo de dato de los campos en la lista retornada\", function () {",
+									"    for (let i in jsonData) {",
+									"        pm.expect(Object.keys(jsonData[i]).length, \"[cantidad de campos en cada objecto]\").to.equal(5);",
+									"        pm.expect(jsonData[i].albumId, \"[albumId]\").to.be.a('number');",
+									"        pm.expect(jsonData[i].id, \"[id]\").to.be.a('number');",
+									"        pm.expect(jsonData[i].title, \"[title]\").to.be.a(\"string\").and.not.empty;",
+									"        pm.expect(jsonData[i].url, \"[url]\").to.be.a(\"string\");",
+									"        pm.expect(jsonData[i].thumbnailUrl, \"[thumbnailUrl]\").to.be.a(\"string\");",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/photos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"photos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Ruta de endpoint users incorrecta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"confirmar el estatus code is 404 Not Found\", function () {",
+									"    pm.response.to.have.status(404).and.to.have.status(\"Not Found\");",
+									"});",
+									"",
+									"pm.test(\"Validar al momento de retornar el cuerpo de la respuesta applicacion/json\", function() {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+									"});",
+									"",
+									"pm.test(\"Confirmar el cuerpo de la respuesta\",  function () {",
+									"    pm.expect(pm.response.json()).to.be.empty;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ruta de endpoint users correcta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"confirmar el codigo es 404 Not Found una vez se retorne\", function () {",
+									"    pm.response.to.have.status(200).and.to.have.status(\"OK\");",
+									"});",
+									"",
+									"pm.test(\"Validar el cuerpo de la respuesta applicacion/json\", function() {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Validar que el tipo de dato de los campos en la lista retornada\", function () {",
+									"    for (let i in jsonData) {",
+									"        pm.expect(Object.keys(jsonData[i]).length, \"[Cantidad de campos retornados general]\").to.equal(8);",
+									"",
+									"        pm.expect(jsonData[i].id, \"[id]\").to.be.a('number');",
+									"        pm.expect(jsonData[i].name, \"[id]\").to.be.a('string');",
+									"        pm.expect(jsonData[i].username, \"[username]\").to.be.a(\"string\").and.not.empty;",
+									"        pm.expect(jsonData[i].email, \"[email]\").to.be.a(\"string\");",
+									"",
+									"        pm.expect(Object.keys(jsonData[i].address).length, \"[Cantidad de campos retornados address]\").to.equal(5);",
+									"        pm.expect(Object.keys(jsonData[i].address.geo).length, \"[Cantidad de campos retornados address.geo]\").to.equal(2);",
+									"        pm.expect(jsonData[i].address, \"[address]\").to.be.an(\"object\");",
+									"        pm.expect(jsonData[i].address.street, \"[address.street]\").to.be.a(\"string\");",
+									"        pm.expect(jsonData[i].address.suite, \"[address.suite]\").to.be.a(\"string\");",
+									"        pm.expect(jsonData[i].address.city, \"[address.city]\").to.be.a(\"string\");",
+									"        pm.expect(jsonData[i].address.zipcode, \"[address.zipcode]\").to.be.a(\"string\");",
+									"        pm.expect(jsonData[i].address.geo, \"[address.geo]\").to.be.an(\"object\");",
+									"        pm.expect(jsonData[i].address.geo.lat, \"[address.zipcode]\").to.be.a(\"string\");",
+									"        pm.expect(jsonData[i].address.geo.lng, \"[address.zipcode]\").to.be.a(\"string\");",
+									"",
+									"        pm.expect(jsonData[i].phone, \"[phone]\").to.be.a(\"string\");",
+									"        pm.expect(jsonData[i].website, \"[website]\").to.be.a(\"string\");",
+									"        pm.expect(jsonData[i].website, \"[website]\").to.be.a(\"string\");",
+									"",
+									"        pm.expect(Object.keys(jsonData[i].company).length, \"[Cantidad de campos retornados company]\").to.equal(3);",
+									"        pm.expect(jsonData[i].company, \"[company]\").to.be.an(\"object\");",
+									"        pm.expect(jsonData[i].company.name, \"[company.name]\").to.be.a(\"string\");",
+									"        pm.expect(jsonData[i].company.catchPhrase, \"[company.catchPhrase]\").to.be.a(\"string\");",
+									"        pm.expect(jsonData[i].company.bs, \"[company.bs]\").to.be.a(\"string\");",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ruta de endpoint users correcta con method POST",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const jsonObj = {};",
+									"const address = {};",
+									"const geo = {};",
+									"const company = {};",
+									"",
+									"jsonObj.name = pm.collectionVariables.get(\"name\");",
+									"jsonObj.email = pm.collectionVariables.get(\"email\");",
+									"jsonObj.username = pm.collectionVariables.get(\"username\");",
+									"",
+									"address.street = pm.collectionVariables.get(\"street-address\");",
+									"address.suite = pm.collectionVariables.get(\"suite-address\");",
+									"address.city = pm.collectionVariables.get(\"city-address\");",
+									"address.zipcode = pm.collectionVariables.get(\"zipcode-address\");",
+									"geo.lat = pm.collectionVariables.get(\"lat-geo-address\");",
+									"geo.lng = pm.collectionVariables.get(\"lng-geo-address\");",
+									"address.geo = geo;",
+									"jsonObj.address = address;",
+									"",
+									"jsonObj.phone = pm.collectionVariables.get(\"phone\");",
+									"jsonObj.website = pm.collectionVariables.get(\"website\");",
+									"",
+									"company.name = pm.collectionVariables.get(\"name-company\");",
+									"company.catchPhrase = pm.collectionVariables.get(\"catchPhrase-company\");",
+									"company.bs = pm.collectionVariables.get(\"bs-company\");",
+									"jsonObj.company = company;",
+									"",
+									"pm.collectionVariables.set(\"jsonBody\", JSON.stringify(jsonObj));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Validar al momento de retornar el estatus code is 404 Not Found\", function () {",
+									"    pm.response.to.have.status(201).and.to.have.status(\"Created\");",
+									"});",
+									"",
+									"pm.test(\"Validar la informacion al momento de retornar el cuerpo de la respuesta applicacion/json\", function() {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"const jsonBody = JSON.parse(pm.collectionVariables.get(\"jsonBody\"));",
+									"",
+									"pm.test(\"Validar la cantidad de elementos retornados dentro del objecto\", function() {",
+									"    pm.expect(Object.keys(jsonData).length).to.equal(8);",
+									"});",
+									"",
+									"pm.test(\"Validar el campo name\", function() {",
+									"    pm.expect(jsonData.name).to.equal(jsonBody.name).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el campo email\", function() {",
+									"    pm.expect(jsonData.email).to.equal(jsonBody.email).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el campo username\", function() {",
+									"    pm.expect(jsonData.username).to.equal(jsonBody.username).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar la cantidad de elementos retornados dentro del objecto address\", function() {",
+									"    pm.expect(Object.keys(jsonData.address).length).to.equal(5);",
+									"});",
+									"",
+									"pm.test(\"Validar el campo address.street\", function() {",
+									"    pm.expect(jsonData.address.street).to.equal(jsonBody.address.street).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el campo address.suite\", function() {",
+									"    pm.expect(jsonData.address.suite).to.equal(jsonBody.address.suite).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el campo address.city\", function() {",
+									"    pm.expect(jsonData.address.city).to.equal(jsonBody.address.city).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el campo address.zipcode\", function() {",
+									"    pm.expect(jsonData.address.zipcode).to.equal(jsonBody.address.zipcode).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar la cantidad de elementos retornados dentro del objecto geo\", function() {",
+									"    pm.expect(Object.keys(jsonData.address.geo).length).to.equal(2);",
+									"});",
+									"",
+									"pm.test(\"Validar el campo address.lat\", function() {",
+									"    pm.expect(jsonData.address.geo.lat).to.equal(jsonBody.address.geo.lat).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el campo address.lng\", function() {",
+									"    pm.expect(jsonData.address.geo.lng).to.equal(jsonBody.address.geo.lng).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el campo phone\", function() {",
+									"    pm.expect(jsonData.phone).to.equal(jsonBody.phone).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el campo website\", function() {",
+									"    pm.expect(jsonData.website).to.equal(jsonBody.website).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar la cantidad de elementos retornados dentro del objecto company\", function() {",
+									"    pm.expect(Object.keys(jsonData.company).length).to.equal(3);",
+									"});",
+									"",
+									"pm.test(\"Validar el campo company.name\", function() {",
+									"    pm.expect(jsonData.company.name).to.equal(jsonBody.company.name).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el campo company.catchPhrase\", function() {",
+									"    pm.expect(jsonData.company.catchPhrase).to.equal(jsonBody.company.catchPhrase).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el campo company.bs\", function() {",
+									"    pm.expect(jsonData.company.bs).to.equal(jsonBody.company.bs).and.to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validar el campo id\", function() {",
+									"    pm.expect(jsonData.id).to.be.a('number');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{jsonBody}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://jsonplaceholder.typicode.com",
+			"type": "string"
+		},
+		{
+			"key": "jsonBody",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "name",
+			"value": "Prueba de Jenifer",
+			"type": "string"
+		},
+		{
+			"key": "email",
+			"value": "maricelaybar@gmail.com",
+			"type": "string"
+		},
+		{
+			"key": "body",
+			"value": "Esto es una prueba de Jenifer para QiK",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "maricelaybar",
+			"type": "string"
+		},
+		{
+			"key": "street-address",
+			"value": "calle 1",
+			"type": "string"
+		},
+		{
+			"key": "suite-address",
+			"value": "3A",
+			"type": "string"
+		},
+		{
+			"key": "city-address",
+			"value": "Santo Domingo",
+			"type": "string"
+		},
+		{
+			"key": "zipcode-address",
+			"value": "302414",
+			"type": "string"
+		},
+		{
+			"key": "lat-geo-address",
+			"value": "-37.3159",
+			"type": "string"
+		},
+		{
+			"key": "lng-geo-address",
+			"value": "81.1496",
+			"type": "string"
+		},
+		{
+			"key": "phone",
+			"value": "8293824827",
+			"type": "string"
+		},
+		{
+			"key": "website",
+			"value": "hola.com",
+			"type": "string"
+		},
+		{
+			"key": "name-company",
+			"value": "aybarsound",
+			"type": "string"
+		},
+		{
+			"key": "catchPhrase-company",
+			"value": "hola",
+			"type": "string"
+		},
+		{
+			"key": "bs-company",
+			"value": "hola2",
+			"type": "string"
+		}
+	]
+}
